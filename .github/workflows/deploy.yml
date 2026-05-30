@@ -22,7 +22,10 @@ jobs:
           node-version: "20"
           cache: "npm"
       - run: npm ci
+      # カスタムドメイン使用時は vars.BASE_URL を "/" に設定する
       - run: npm run build
+        env:
+          BASE_URL: ${{ vars.BASE_URL || '/Web_QRtoDXF/' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
