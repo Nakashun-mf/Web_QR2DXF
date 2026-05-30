@@ -39,16 +39,18 @@ function solidEntity(
   );
 }
 
+// R12 (AC1009) を採用。R12 はハンドル・BLOCK_RECORD テーブル・OBJECTS
+// セクションを必要としない最も互換性の高い DXF 形式で、刻印機や各種 CAD が
+// 確実に読み込める。AC1015 を名乗りつつ必須構造を欠いていたため
+// 「破損して開けない」状態になっていた。
 function headerSection(): string {
   return (
     row(0, "SECTION") +
     row(2, "HEADER") +
     row(9, "$ACADVER") +
-    row(1, "AC1015") +
+    row(1, "AC1009") +
     row(9, "$INSUNITS") +
     row(70, 4) +
-    row(9, "$MEASUREMENT") +
-    row(70, 1) +
     row(0, "ENDSEC")
   );
 }
@@ -83,42 +85,6 @@ function tablesSection(layerName: string): string {
   );
 }
 
-function blocksSection(): string {
-  const modelSpace =
-    row(0, "BLOCK") +
-    row(8, "0") +
-    row(2, "*Model_Space") +
-    row(70, 0) +
-    row(10, "0.0") +
-    row(20, "0.0") +
-    row(30, "0.0") +
-    row(3, "*Model_Space") +
-    row(1, "") +
-    row(0, "ENDBLK") +
-    row(8, "0");
-
-  const paperSpace =
-    row(0, "BLOCK") +
-    row(8, "0") +
-    row(2, "*Paper_Space") +
-    row(70, 0) +
-    row(10, "0.0") +
-    row(20, "0.0") +
-    row(30, "0.0") +
-    row(3, "*Paper_Space") +
-    row(1, "") +
-    row(0, "ENDBLK") +
-    row(8, "0");
-
-  return (
-    row(0, "SECTION") +
-    row(2, "BLOCKS") +
-    modelSpace +
-    paperSpace +
-    row(0, "ENDSEC")
-  );
-}
-
 export function exportToDXF(matrix: QRMatrix, options: DXFOptions): string {
   const {
     dotSizeMm,
@@ -144,7 +110,6 @@ export function exportToDXF(matrix: QRMatrix, options: DXFOptions): string {
   return (
     headerSection() +
     tablesSection(layerName) +
-    blocksSection() +
     row(0, "SECTION") +
     row(2, "ENTITIES") +
     entities +
