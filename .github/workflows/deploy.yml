@@ -26,8 +26,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # カスタムドメイン使用時は GitHub リポジトリの vars.BASE_URL を "/" に設定
-          BASE_URL: ${{ vars.BASE_URL != '' && vars.BASE_URL || '/Web_QRtoDXF/' }}
+          # github.io 直接アクセスに戻す場合は vars.BASE_URL を "/Web_QRtoDXF/" に設定
+          BASE_URL: ${{ vars.BASE_URL || '/' }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
