@@ -4,18 +4,16 @@ import {
   CheckCircle2,
   Download,
   FileCode2,
-  Info,
   RefreshCw,
   ScanLine,
   Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea, Badge, Label, Separator } from "@/components/ui/primitives";
+import { Textarea, Label, Separator } from "@/components/ui/primitives";
 import {
   generateQRMatrix,
   drawQRToCanvas,
-  MARKING_AREA,
   type ErrorCorrectionLevel,
   type QRInfo,
 } from "@/lib/qr-generator";
@@ -115,13 +113,6 @@ export default function App() {
             <ScanLine className="w-5 h-5" />
             <span className="font-bold text-base tracking-tight">QR Code DXF Generator</span>
           </div>
-          <Separator className="h-5 w-px bg-border" />
-          <span className="text-sm text-muted-foreground">東京彫刻 MB3315S 用</span>
-          <div className="ml-auto flex items-center gap-2">
-            <Badge variant="outline">
-              マーキングエリア {MARKING_AREA.width}×{MARKING_AREA.height} mm
-            </Badge>
-          </div>
         </div>
       </header>
 
@@ -187,10 +178,6 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-muted-foreground flex items-start gap-1.5">
-                <Info className="w-3 h-3 mt-0.5 shrink-0" />
-                打刻後の読み取りを考慮する場合は Q または H を推奨
-              </p>
             </CardContent>
           </Card>
 
@@ -254,27 +241,11 @@ export default function App() {
               {qrInfo && (
                 <div className="w-full space-y-3">
                   <Separator />
-                  <div className={`flex items-center gap-2 p-3 rounded-md border text-sm ${
-                    qrInfo.fitsInMarkingArea
-                      ? "bg-green-50 border-green-200 text-green-700"
-                      : "bg-destructive/5 border-destructive/20 text-destructive"
-                  }`}>
-                    {qrInfo.fitsInMarkingArea
-                      ? <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      : <AlertTriangle className="w-4 h-4 shrink-0" />
-                    }
-                    <span className="text-xs font-medium">
-                      {qrInfo.fitsInMarkingArea
-                        ? `マーキングエリア内に収まります（${qrInfo.recommendedSizeMm} mm 正方形）`
-                        : `マーキングエリア(${MARKING_AREA.width}×${MARKING_AREA.height}mm)を超えます。エラー訂正レベルを下げるか、内容を短くしてください`
-                      }
-                    </span>
-                  </div>
                   <div className="grid grid-cols-2 gap-2">
                     {[
                       { label: "バージョン",   value: `Version ${qrInfo.version}` },
                       { label: "モジュール数", value: `${qrInfo.moduleCount} × ${qrInfo.moduleCount}` },
-                      { label: "QRサイズ",     value: `${qrInfo.recommendedSizeMm} mm 正方形` },
+                      { label: "出力サイズ",   value: `${qrInfo.totalSizeMm} mm 正方形` },
                       { label: "ドット精度",   value: `${qrInfo.dotSizeMm} mm / ドット` },
                     ].map((item) => (
                       <div key={item.label} className="bg-muted/40 rounded-md p-2.5">
@@ -298,7 +269,7 @@ export default function App() {
       <footer className="border-t mt-4">
         <div className="max-w-5xl mx-auto px-4 h-10 flex items-center">
           <span className="text-xs text-muted-foreground">
-            QR Code DXF Generator — 東京彫刻 MB3315S 専用 ／ DXF形式 (AutoCAD 2000) ／ 単位 mm
+            QR Code DXF Generator — DXF形式 (AutoCAD 2000 / AC1015) ／ 単位 mm
           </span>
         </div>
       </footer>

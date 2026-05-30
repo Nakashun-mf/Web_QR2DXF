@@ -11,26 +11,14 @@ export interface QRInfo {
   matrix: QRMatrix;
   version: number;
   moduleCount: number;
-  recommendedSizeMm: number;
+  totalSizeMm: number;
   dotSizeMm: number;
-  fitsInMarkingArea: boolean;
 }
 
-// MB3315S のマーキングエリア
-export const MARKING_AREA = {
-  width: 33,
-  height: 15,
-} as const;
+const DEFAULT_DOT_SIZE_MM = 1.0;
 
-// バージョンからモジュール数を計算
 function versionToModules(version: number): number {
   return 21 + (version - 1) * 4;
-}
-
-// モジュール数から最適なドットサイズを計算（最大 13mm 正方形に収める）
-function calcDotSize(moduleCount: number): number {
-  const maxSize = Math.min(MARKING_AREA.width - 4, MARKING_AREA.height - 2); // 余白込み
-  return Math.floor((maxSize / moduleCount) * 100) / 100;
 }
 
 export async function generateQRMatrix(
@@ -39,10 +27,9 @@ export async function generateQRMatrix(
 ): Promise<QRInfo> {
   if (!text.trim()) throw new Error("テキストを入力してください");
 
-  // QRコードのデータ取得
   const qrData = await QRCode.create(text, {
     errorCorrectionLevel: errorLevel,
-    version: undefined, // 自動決定
+    version: undefined,
   });
 
   const size = qrData.modules.size;
@@ -50,23 +37,18 @@ export async function generateQRMatrix(
   const version = qrData.version;
 
   const moduleCount = versionToModules(version);
-  const dotSize = calcDotSize(moduleCount);
-  const recommendedSizeMm = Math.round(moduleCount * dotSize * 10) / 10;
-  const fitsInMarkingArea =
-    recommendedSizeMm <= MARKING_AREA.width - 4 &&
-    recommendedSizeMm <= MARKING_AREA.height - 2;
+  const dotSizeMm = DEFAULT_DOT_SIZE_MM;
+  const totalSizeMm = Math.round(moduleCount * dotSizeMm * 10) / 10;
 
   return {
     matrix: { data, size },
     version,
     moduleCount,
-    recommendedSizeMm,
-    dotSizeMm: dotSize,
-    fitsInMarkingArea,
+    totalSizeMm,
+    dotSizeMm,
   };
 }
 
-// Canvas にQRコードを描画
 export async function drawQRToCanvas(
   canvas: HTMLCanvasElement,
   text: string,
