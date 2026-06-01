@@ -307,9 +307,6 @@ export default function App() {
           <span className="font-mono text-[11px] font-medium tracking-[0.14em] uppercase text-[var(--ink-4)]">
             GEN-031 · DXF / AutoCAD 2000 · mm
           </span>
-          <span className="font-mono text-[11px] font-medium tracking-[0.14em] uppercase text-[var(--ink-4)]">
-            MB3315S
-          </span>
         </div>
       </footer>
     </div>
