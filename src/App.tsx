@@ -33,6 +33,7 @@ const ERROR_LEVELS: { value: ErrorCorrectionLevel; label: string; desc: string }
 export default function App() {
   const [inputText, setInputText] = useState("");
   const [errorLevel, setErrorLevel] = useState<ErrorCorrectionLevel>("M");
+  const [targetSizeMm, setTargetSizeMm] = useState(15);
   const [qrInfo, setQrInfo] = useState<QRInfo | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -43,7 +44,7 @@ export default function App() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const generate = useCallback(
-    async (text: string, level: ErrorCorrectionLevel) => {
+    async (text: string, level: ErrorCorrectionLevel, sizeMm: number) => {
       if (!text.trim()) {
         setQrInfo(null);
         setError(null);
@@ -52,7 +53,7 @@ export default function App() {
       setIsGenerating(true);
       setError(null);
       try {
-        const info = await generateQRMatrix(text, level);
+        const info = await generateQRMatrix(text, level, sizeMm);
         setQrInfo(info);
         if (canvasRef.current) {
           await drawQRToCanvas(canvasRef.current, text, level, 10);
@@ -70,12 +71,12 @@ export default function App() {
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      generate(inputText, errorLevel);
+      generate(inputText, errorLevel, targetSizeMm);
     }, 300);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [inputText, errorLevel, generate]);
+  }, [inputText, errorLevel, targetSizeMm, generate]);
 
   const handleDownload = async () => {
     if (!qrInfo || !inputText.trim()) return;
@@ -97,6 +98,7 @@ export default function App() {
   const handleReset = () => {
     setInputText("");
     setErrorLevel("M");
+    setTargetSizeMm(15);
     setQrInfo(null);
     setError(null);
     setLastDownloaded(null);
@@ -177,6 +179,34 @@ export default function App() {
                     </span>
                   </button>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Settings2 className="w-4 h-4 text-primary" />
+                刻印サイズ
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2">
+              <Label className="text-xs text-muted-foreground">
+                一辺の長さ (mm) — MB3315S は最大 15mm
+              </Label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min={5}
+                  max={33}
+                  step={0.5}
+                  value={targetSizeMm}
+                  onChange={(e) => setTargetSizeMm(Number(e.target.value))}
+                  className="flex-1 accent-primary"
+                />
+                <span className="text-sm font-mono font-medium w-14 text-right">
+                  {targetSizeMm} mm
+                </span>
               </div>
             </CardContent>
           </Card>

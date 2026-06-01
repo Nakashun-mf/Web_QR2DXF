@@ -15,15 +15,14 @@ export interface QRInfo {
   dotSizeMm: number;
 }
 
-const DEFAULT_DOT_SIZE_MM = 1.0;
-
 function versionToModules(version: number): number {
   return 21 + (version - 1) * 4;
 }
 
 export async function generateQRMatrix(
   text: string,
-  errorLevel: ErrorCorrectionLevel
+  errorLevel: ErrorCorrectionLevel,
+  targetSizeMm?: number
 ): Promise<QRInfo> {
   if (!text.trim()) throw new Error("テキストを入力してください");
 
@@ -37,8 +36,12 @@ export async function generateQRMatrix(
   const version = qrData.version;
 
   const moduleCount = versionToModules(version);
-  const dotSizeMm = DEFAULT_DOT_SIZE_MM;
-  const totalSizeMm = Math.round(moduleCount * dotSizeMm * 10) / 10;
+  const dotSizeMm = targetSizeMm
+    ? Math.floor((targetSizeMm / moduleCount) * 1000) / 1000
+    : 1.0;
+  const totalSizeMm = targetSizeMm
+    ? Math.round(targetSizeMm * 10) / 10
+    : Math.round(moduleCount * dotSizeMm * 10) / 10;
 
   return {
     matrix: { data, size },
