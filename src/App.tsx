@@ -107,11 +107,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-white sticky top-0 z-10 shadow-sm">
+      <header className="border-b bg-background sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
-          <div className="flex items-center gap-2 text-primary">
+          <div className="flex items-center gap-2">
             <ScanLine className="w-5 h-5" />
-            <span className="font-bold text-base tracking-tight">QR Code DXF Generator</span>
+            <span className="font-semibold text-sm tracking-tight">QR Code DXF Generator</span>
           </div>
         </div>
       </header>
@@ -121,7 +121,7 @@ export default function App() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                <FileCode2 className="w-4 h-4 text-primary" />
+                <FileCode2 className="w-4 h-4" />
                 コンテンツ入力
               </CardTitle>
             </CardHeader>
@@ -155,7 +155,7 @@ export default function App() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                <Settings2 className="w-4 h-4 text-primary" />
+                <Settings2 className="w-4 h-4" />
                 エラー訂正レベル
               </CardTitle>
             </CardHeader>
@@ -167,12 +167,12 @@ export default function App() {
                     onClick={() => setErrorLevel(lv.value)}
                     className={`flex flex-col items-start p-3 rounded-md border text-left transition-colors ${
                       errorLevel === lv.value
-                        ? "border-primary bg-accent text-primary"
-                        : "border-border bg-white hover:bg-muted/50 text-foreground"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card hover:bg-muted/60 text-foreground"
                     }`}
                   >
                     <span className="font-bold text-base leading-none mb-1">{lv.label}</span>
-                    <span className={`text-xs leading-tight ${errorLevel === lv.value ? "text-accent-foreground" : "text-muted-foreground"}`}>
+                    <span className={`text-xs leading-tight ${errorLevel === lv.value ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                       {lv.desc}
                     </span>
                   </button>
@@ -214,7 +214,7 @@ export default function App() {
           <Card className="flex-1">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
-                <ScanLine className="w-4 h-4 text-primary" />
+                <ScanLine className="w-4 h-4" />
                 プレビュー
               </CardTitle>
             </CardHeader>
@@ -222,7 +222,7 @@ export default function App() {
               <div className="relative flex items-center justify-center w-full min-h-[200px] rounded-md bg-muted/30 border border-dashed border-border">
                 {isGenerating && (
                   <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-md z-10">
-                    <RefreshCw className="w-5 h-5 text-primary animate-spin" />
+                    <RefreshCw className="w-5 h-5 animate-spin" />
                   </div>
                 )}
                 {!inputText.trim() && !isGenerating && (
