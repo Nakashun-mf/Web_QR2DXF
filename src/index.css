@@ -4,24 +4,54 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --radius: 0.5rem;
+    /* ── a-ef raw design tokens ─────────────────────────── */
+    --paper:          #FBFBF9;
+    --paper-2:        #F4F4F0;
+    --surface:        #FFFFFF;
+    --surface-2:      #F8F8F5;
+    --ink:            #15171A;
+    --ink-2:          #565C63;
+    --ink-3:          #878D95;
+    --ink-4:          #B4B9BF;
+    --line:           #E5E6E1;
+    --line-2:         #D6D8D2;
+    --line-strong:    #C2C5BE;
+    --signal:         #0E9E6B;
+    --signal-ink:     #0A7C53;
+    --signal-bright:  #16B97E;
+    --signal-wash:    #E7F5EE;
+    --signal-line:    #BCE3D2;
+    --danger:         #D1473B;
+    --danger-wash:    #FBE9E7;
+    --danger-line:    #F2C4BE;
+    --warn:           #B7791F;
+    --warn-wash:      #FBF1DD;
+    --warn-line:      #ECD7A6;
+    --info:           #2563C9;
+    --info-wash:      #E8EFFC;
+    --info-line:      #BDD2F2;
+    --focus-ring:     0 0 0 3px rgba(14, 158, 107, 0.28);
+    --ease:           cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    /* ── Tailwind CSS variable mappings (HSL) ───────────── */
+    --background:             60 20% 98%;
+    --foreground:             216 11% 9%;
+    --card:                   0 0% 100%;
+    --card-foreground:        216 11% 9%;
+    --border:                 72 9% 89%;
+    --input:                  80 7% 83%;
+    --ring:                   159 84% 34%;
+    --primary:                159 84% 34%;
+    --primary-foreground:     0 0% 100%;
+    --secondary:              60 18% 97%;
+    --secondary-foreground:   216 11% 9%;
+    --muted:                  60 15% 95%;
+    --muted-foreground:       214 6% 56%;
+    --accent:                 150 41% 93%;
+    --accent-foreground:      158 85% 26%;
+    --destructive:            3 62% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --radius:                 0.4375rem;
   }
 }
 
@@ -31,7 +61,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", system-ui, sans-serif;
+    font-family: "IBM Plex Sans JP", "IBM Plex Sans", system-ui, -apple-system,
+                 "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 }

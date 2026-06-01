@@ -7,6 +7,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"IBM Plex Sans JP"', '"IBM Plex Sans"', 'system-ui', '-apple-system', '"Hiragino Kaku Gothic ProN"', '"Yu Gothic"', 'Meiryo', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', '"SF Mono"', 'Menlo', 'Consolas', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -39,9 +43,17 @@ export default {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg:   "10px",
+        md:   "7px",
+        sm:   "5px",
+        xs:   "3px",
+        pill: "999px",
+      },
+      boxShadow: {
+        sm:      "0 1px 2px rgba(21,23,26,0.05)",
+        DEFAULT: "0 2px 4px rgba(21,23,26,0.06), 0 1px 2px rgba(21,23,26,0.04)",
+        md:      "0 6px 16px rgba(21,23,26,0.08), 0 2px 4px rgba(21,23,26,0.04)",
+        lg:      "0 16px 40px rgba(21,23,26,0.12), 0 4px 10px rgba(21,23,26,0.06)",
       },
     },
   },

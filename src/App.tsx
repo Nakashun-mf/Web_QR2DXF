@@ -107,27 +107,37 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-background sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <ScanLine className="w-5 h-5" />
-            <span className="font-semibold text-sm tracking-tight">QR Code DXF Generator</span>
+
+      {/* ── Header ─────────────────────────────────────────── */}
+      <header className="border-b border-[var(--line)] bg-background sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <ScanLine className="w-[18px] h-[18px] text-[var(--signal)]" strokeWidth={1.75} />
+            <span className="font-semibold text-sm text-[var(--ink)]">QR Code DXF Generator</span>
           </div>
+          <span className="font-mono text-[11px] font-medium tracking-[0.14em] uppercase text-[var(--ink-3)]">
+            GEN-031
+          </span>
         </div>
       </header>
 
+      {/* ── Main ───────────────────────────────────────────── */}
       <main className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Left column */}
         <div className="flex flex-col gap-4">
+
+          {/* Content input */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <FileCode2 className="w-4 h-4" />
+              <CardTitle className="text-sm flex items-center gap-2 text-[var(--ink)]">
+                <FileCode2 className="w-4 h-4 text-[var(--ink-3)]" strokeWidth={1.75} />
                 コンテンツ入力
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <div>
-                <Label className="text-xs text-muted-foreground mb-1.5 block">
+                <Label className="text-xs text-[var(--ink-3)] mb-1.5 block font-normal">
                   テキスト / URL / 英数字
                 </Label>
                 <Textarea
@@ -138,24 +148,30 @@ export default function App() {
                   maxLength={500}
                 />
                 <div className="flex justify-end mt-1">
-                  <span className={`text-xs ${charCount > 450 ? "text-destructive" : "text-muted-foreground"}`}>
+                  <span className={`font-mono text-[11px] font-medium tracking-[0.06em] ${
+                    charCount > 450
+                      ? "text-[var(--danger)]"
+                      : "text-[var(--ink-4)]"
+                  }`}>
                     {charCount} / 500
                   </span>
                 </div>
               </div>
+
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/5 border border-destructive/20 text-destructive text-xs">
-                  <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                <div className="flex items-start gap-2 p-3 rounded-md bg-[var(--danger-wash)] border border-[var(--danger-line)] text-[var(--danger)] text-xs">
+                  <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" strokeWidth={1.75} />
                   {error}
                 </div>
               )}
             </CardContent>
           </Card>
 
+          {/* Error correction level */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Settings2 className="w-4 h-4" />
+              <CardTitle className="text-sm flex items-center gap-2 text-[var(--ink)]">
+                <Settings2 className="w-4 h-4 text-[var(--ink-3)]" strokeWidth={1.75} />
                 エラー訂正レベル
               </CardTitle>
             </CardHeader>
@@ -165,14 +181,18 @@ export default function App() {
                   <button
                     key={lv.value}
                     onClick={() => setErrorLevel(lv.value)}
-                    className={`flex flex-col items-start p-3 rounded-md border text-left transition-colors ${
+                    className={`flex flex-col items-start p-3 rounded-md border text-left transition-all duration-[170ms] ${
                       errorLevel === lv.value
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-card hover:bg-muted/60 text-foreground"
+                        ? "border-[var(--signal-line)] bg-[var(--signal-wash)] text-[var(--signal-ink)]"
+                        : "border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--surface-2)] hover:border-[var(--line-2)] text-[var(--ink)]"
                     }`}
                   >
                     <span className="font-bold text-base leading-none mb-1">{lv.label}</span>
-                    <span className={`text-xs leading-tight ${errorLevel === lv.value ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                    <span className={`text-xs leading-tight font-normal ${
+                      errorLevel === lv.value
+                        ? "text-[var(--signal-ink)]"
+                        : "text-[var(--ink-3)]"
+                    }`}>
                       {lv.desc}
                     </span>
                   </button>
@@ -181,6 +201,7 @@ export default function App() {
             </CardContent>
           </Card>
 
+          {/* Actions */}
           <div className="flex flex-col gap-2">
             <Button
               onClick={handleDownload}
@@ -188,7 +209,7 @@ export default function App() {
               size="lg"
               className="w-full gap-2"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4" strokeWidth={1.75} />
               {isDownloading ? "出力中..." : "DXF をダウンロード"}
             </Button>
             <Button
@@ -197,38 +218,44 @@ export default function App() {
               size="default"
               className="w-full gap-2"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.75} />
               リセット
             </Button>
           </div>
 
+          {/* Success state */}
           {lastDownloaded && (
-            <div className="flex items-center gap-2 p-3 rounded-md bg-green-50 border border-green-200 text-green-700 text-xs">
-              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+            <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--signal-wash)] border border-[var(--signal-line)] text-[var(--signal-ink)] text-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} />
               <span className="font-mono truncate">{lastDownloaded}</span>
             </div>
           )}
         </div>
 
+        {/* Right column */}
         <div className="flex flex-col gap-4">
           <Card className="flex-1">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <ScanLine className="w-4 h-4" />
+              <CardTitle className="text-sm flex items-center gap-2 text-[var(--ink)]">
+                <ScanLine className="w-4 h-4 text-[var(--ink-3)]" strokeWidth={1.75} />
                 プレビュー
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4">
-              <div className="relative flex items-center justify-center w-full min-h-[200px] rounded-md bg-muted/30 border border-dashed border-border">
+
+              {/* Canvas area */}
+              <div className="relative flex items-center justify-center w-full min-h-[200px] rounded-md bg-[var(--paper-2)] border border-dashed border-[var(--line-2)]">
                 {isGenerating && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-md z-10">
-                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-[var(--surface)]/80 rounded-md z-10">
+                    <RefreshCw className="w-5 h-5 text-[var(--signal)] animate-spin" strokeWidth={1.75} />
                   </div>
                 )}
                 {!inputText.trim() && !isGenerating && (
-                  <div className="text-center text-muted-foreground text-sm py-8">
-                    <ScanLine className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                    コンテンツを入力するとプレビューが表示されます
+                  <div className="text-center py-8 flex flex-col items-center gap-2">
+                    <ScanLine className="w-10 h-10 text-[var(--ink-4)]" strokeWidth={1.5} />
+                    <p className="text-xs text-[var(--ink-3)] font-normal leading-snug">
+                      コンテンツを入力すると<br />プレビューが表示されます
+                    </p>
                   </div>
                 )}
                 <canvas
@@ -238,26 +265,34 @@ export default function App() {
                 />
               </div>
 
+              {/* QR info stats */}
               {qrInfo && (
                 <div className="w-full space-y-3">
                   <Separator />
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { label: "バージョン",   value: `Version ${qrInfo.version}` },
-                      { label: "モジュール数", value: `${qrInfo.moduleCount} × ${qrInfo.moduleCount}` },
-                      { label: "出力サイズ",   value: `${qrInfo.totalSizeMm} mm 正方形` },
-                      { label: "ドット精度",   value: `${qrInfo.dotSizeMm} mm / ドット` },
+                      { label: "VERSION",     value: `Version ${qrInfo.version}` },
+                      { label: "MODULES",     value: `${qrInfo.moduleCount} × ${qrInfo.moduleCount}` },
+                      { label: "OUTPUT SIZE", value: `${qrInfo.totalSizeMm} mm` },
+                      { label: "DOT SIZE",    value: `${qrInfo.dotSizeMm} mm / dot` },
                     ].map((item) => (
-                      <div key={item.label} className="bg-muted/40 rounded-md p-2.5">
-                        <div className="text-xs text-muted-foreground">{item.label}</div>
-                        <div className="text-sm font-medium mt-0.5">{item.value}</div>
+                      <div key={item.label} className="bg-[var(--paper-2)] rounded-md p-2.5">
+                        <div className="font-mono text-[10px] font-medium tracking-[0.14em] uppercase text-[var(--ink-4)]">
+                          {item.label}
+                        </div>
+                        <div className="font-mono text-sm font-medium mt-1 text-[var(--ink)]">
+                          {item.value}
+                        </div>
                       </div>
                     ))}
                   </div>
-                  <div className="flex items-center gap-2 p-2.5 rounded-md bg-muted/40 text-xs text-muted-foreground">
-                    <FileCode2 className="w-3.5 h-3.5 shrink-0" />
-                    DXFレイヤー名：<span className="font-mono text-foreground">QR_CODE</span>
-                    ／単位：<span className="font-mono text-foreground">mm</span>
+                  <div className="flex items-center gap-2 p-2.5 rounded-md bg-[var(--paper-2)]">
+                    <FileCode2 className="w-3.5 h-3.5 shrink-0 text-[var(--ink-4)]" strokeWidth={1.75} />
+                    <span className="font-mono text-[11px] text-[var(--ink-3)] tracking-[0.04em] uppercase">
+                      Layer: <span className="text-[var(--ink)]">QR_CODE</span>
+                      &nbsp;·&nbsp;
+                      Unit: <span className="text-[var(--ink)]">mm</span>
+                    </span>
                   </div>
                 </div>
               )}
@@ -266,10 +301,14 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="border-t mt-4">
-        <div className="max-w-5xl mx-auto px-4 h-10 flex items-center">
-          <span className="text-xs text-muted-foreground">
-            QR Code DXF Generator — DXF形式 (AutoCAD 2000 / AC1015) ／ 単位 mm
+      {/* ── Footer ─────────────────────────────────────────── */}
+      <footer className="border-t border-[var(--line)] mt-4">
+        <div className="max-w-5xl mx-auto px-4 h-10 flex items-center justify-between">
+          <span className="font-mono text-[11px] font-medium tracking-[0.14em] uppercase text-[var(--ink-4)]">
+            GEN-031 · DXF / AutoCAD 2000 · mm
+          </span>
+          <span className="font-mono text-[11px] font-medium tracking-[0.14em] uppercase text-[var(--ink-4)]">
+            MB3315S
           </span>
         </div>
       </footer>
