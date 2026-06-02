@@ -4,9 +4,12 @@ import {
   CheckCircle2,
   Download,
   FileCode2,
+  HelpCircle,
+  Moon,
   RefreshCw,
   ScanLine,
   Settings2,
+  Sun,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,12 +26,36 @@ import {
   generateFilename,
 } from "@/lib/dxf-exporter";
 
-const ERROR_LEVELS: { value: ErrorCorrectionLevel; label: string; desc: string }[] = [
-  { value: "L", label: "L", desc: "7% — 高速・小サイズ" },
-  { value: "M", label: "M", desc: "15% — 推奨（汎用）" },
-  { value: "Q", label: "Q", desc: "25% — 耐汚損性高" },
-  { value: "H", label: "H", desc: "30% — 最高耐性" },
+const ERROR_LEVELS: { value: ErrorCorrectionLevel; label: string; desc: string; detail: string }[] = [
+  { value: "L", label: "L", desc: "7% — 高速・小サイズ",     detail: "データ量が少なく読み取り環境が良好な場合に最適" },
+  { value: "M", label: "M", desc: "15% — 推奨（汎用）",      detail: "一般的な用途に最適なバランス設定" },
+  { value: "Q", label: "Q", desc: "25% — 耐汚損性高",        detail: "汚れや傷がつきやすい環境での刻印に推奨" },
+  { value: "H", label: "H", desc: "30% — 最高耐性",          detail: "最も強い誤り訂正。QRコードが大きくなる" },
 ];
+
+function useDarkMode() {
+  const [dark, setDark] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem("qr-dxf-dark");
+      if (stored !== null) return stored === "true";
+    } catch {}
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (dark) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    try {
+      localStorage.setItem("qr-dxf-dark", String(dark));
+    } catch {}
+  }, [dark]);
+
+  return [dark, setDark] as const;
+}
 
 export default function App() {
   const [inputText, setInputText] = useState("");
@@ -38,6 +65,8 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastDownloaded, setLastDownloaded] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [dark, setDark] = useDarkMode();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -87,7 +116,7 @@ export default function App() {
       const filename = generateFilename("QR");
       downloadDXF(dxfContent, filename);
       setLastDownloaded(filename);
-    } catch (e) {
+    } catch {
       setError("DXF出力に失敗しました");
     } finally {
       setIsDownloading(false);
@@ -107,16 +136,76 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-white sticky top-0 z-10 shadow-sm">
+      {/* Header */}
+      <header className="border-b bg-card sticky top-0 z-10 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center gap-3">
-          <div className="flex items-center gap-2 text-primary">
-            <ScanLine className="w-5 h-5" />
-            <span className="font-bold text-base tracking-tight">QR Code DXF Generator</span>
+          <div className="flex items-center gap-2 text-primary flex-1">
+            <ScanLine className="w-5 h-5 shrink-0" />
+            <div>
+              <span className="font-bold text-base tracking-tight">QR Code DXF Generator</span>
+              <span className="hidden sm:inline text-xs text-muted-foreground ml-2">
+                テキスト・URLをQRコードに変換してDXFファイルで出力
+              </span>
+            </div>
           </div>
+          <button
+            onClick={() => setShowHelp((v) => !v)}
+            className={`p-2 rounded-md transition-colors ${
+              showHelp
+                ? "bg-accent text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
+            aria-label="使い方"
+            title="使い方"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setDark((v) => !v)}
+            className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label={dark ? "ライトモードに切り替え" : "ダークモードに切り替え"}
+            title={dark ? "ライトモード" : "ダークモード"}
+          >
+            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
         </div>
       </header>
 
+      {/* Help Panel */}
+      {showHelp && (
+        <div className="border-b bg-accent/40">
+          <div className="max-w-5xl mx-auto px-4 py-4">
+            <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+              <HelpCircle className="w-4 h-4 text-primary" />
+              使い方
+            </h2>
+            <ol className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-muted-foreground">
+              {[
+                { step: "1", title: "テキストを入力", body: "QRコードに埋め込む文字列・URL・品番などを入力します。最大500文字対応。" },
+                { step: "2", title: "エラー訂正レベルを選択", body: "刻印後に傷・汚れが想定される場合はQ/Hを推奨。通常はM（デフォルト）で問題ありません。" },
+                { step: "3", title: "プレビューで確認", body: "入力に応じてリアルタイムでQRコードが生成されます。バージョンとサイズも自動表示されます。" },
+                { step: "4", title: "DXFをダウンロード", body: "「DXFをダウンロード」ボタンを押すと .dxf ファイルが保存されます。CADソフトや刻印機にそのまま読み込めます。" },
+              ].map((item) => (
+                <li key={item.step} className="flex gap-3 items-start">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-bold">
+                    {item.step}
+                  </span>
+                  <div>
+                    <div className="font-medium text-foreground mb-0.5">{item.title}</div>
+                    <div>{item.body}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-3 pt-3 border-t border-border/50 text-xs text-muted-foreground">
+              出力DXFは <strong className="text-foreground">AutoCAD 2000 (AC1015)</strong> 形式、単位 <strong className="text-foreground">mm</strong>、レイヤー <strong className="text-foreground font-mono">QR_CODE</strong> に SOLIDエンティティとして格納されます。
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Left column */}
         <div className="flex flex-col gap-4">
           <Card>
             <CardHeader className="pb-3">
@@ -124,6 +213,9 @@ export default function App() {
                 <FileCode2 className="w-4 h-4 text-primary" />
                 コンテンツ入力
               </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                QRコードに埋め込むテキスト・URL・数値を入力してください
+              </p>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <div>
@@ -144,7 +236,7 @@ export default function App() {
                 </div>
               </div>
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/5 border border-destructive/20 text-destructive text-xs">
+                <div className="flex items-start gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs">
                   <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                   {error}
                 </div>
@@ -158,6 +250,9 @@ export default function App() {
                 <Settings2 className="w-4 h-4 text-primary" />
                 エラー訂正レベル
               </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                刻印後の読み取り精度に影響します。通常は <strong>M</strong> を推奨
+              </p>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-2">
@@ -165,10 +260,11 @@ export default function App() {
                   <button
                     key={lv.value}
                     onClick={() => setErrorLevel(lv.value)}
+                    title={lv.detail}
                     className={`flex flex-col items-start p-3 rounded-md border text-left transition-colors ${
                       errorLevel === lv.value
                         ? "border-primary bg-accent text-primary"
-                        : "border-border bg-white hover:bg-muted/50 text-foreground"
+                        : "border-border bg-card hover:bg-muted/50 text-foreground"
                     }`}
                   >
                     <span className="font-bold text-base leading-none mb-1">{lv.label}</span>
@@ -178,6 +274,11 @@ export default function App() {
                   </button>
                 ))}
               </div>
+              {errorLevel && (
+                <p className="text-xs text-muted-foreground mt-2 px-0.5">
+                  {ERROR_LEVELS.find((l) => l.value === errorLevel)?.detail}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -203,13 +304,22 @@ export default function App() {
           </div>
 
           {lastDownloaded && (
-            <div className="flex items-center gap-2 p-3 rounded-md bg-green-50 border border-green-200 text-green-700 text-xs">
+            <div
+              className="flex items-center gap-2 p-3 rounded-md text-xs"
+              style={{
+                backgroundColor: "hsl(var(--success-bg))",
+                borderColor: "hsl(var(--success-border))",
+                color: "hsl(var(--success))",
+                border: "1px solid",
+              }}
+            >
               <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
               <span className="font-mono truncate">{lastDownloaded}</span>
             </div>
           )}
         </div>
 
+        {/* Right column */}
         <div className="flex flex-col gap-4">
           <Card className="flex-1">
             <CardHeader className="pb-3">
@@ -217,11 +327,14 @@ export default function App() {
                 <ScanLine className="w-4 h-4 text-primary" />
                 プレビュー
               </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                入力に応じてリアルタイムで生成されます
+              </p>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-4">
               <div className="relative flex items-center justify-center w-full min-h-[200px] rounded-md bg-muted/30 border border-dashed border-border">
                 {isGenerating && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-md z-10">
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-md z-10">
                     <RefreshCw className="w-5 h-5 text-primary animate-spin" />
                   </div>
                 )}
@@ -243,12 +356,12 @@ export default function App() {
                   <Separator />
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { label: "バージョン",   value: `Version ${qrInfo.version}` },
-                      { label: "モジュール数", value: `${qrInfo.moduleCount} × ${qrInfo.moduleCount}` },
-                      { label: "出力サイズ",   value: `${qrInfo.totalSizeMm} mm 正方形` },
-                      { label: "ドット精度",   value: `${qrInfo.dotSizeMm} mm / ドット` },
+                      { label: "バージョン",   value: `Version ${qrInfo.version}`,                 hint: "データ量に応じて自動決定" },
+                      { label: "モジュール数", value: `${qrInfo.moduleCount} × ${qrInfo.moduleCount}`, hint: "QRコードのセル数" },
+                      { label: "出力サイズ",   value: `${qrInfo.totalSizeMm} mm 正方形`,           hint: "DXFファイルでの実寸" },
+                      { label: "ドット精度",   value: `${qrInfo.dotSizeMm} mm / ドット`,           hint: "1セルのサイズ" },
                     ].map((item) => (
-                      <div key={item.label} className="bg-muted/40 rounded-md p-2.5">
+                      <div key={item.label} className="bg-muted/40 rounded-md p-2.5" title={item.hint}>
                         <div className="text-xs text-muted-foreground">{item.label}</div>
                         <div className="text-sm font-medium mt-0.5">{item.value}</div>
                       </div>
