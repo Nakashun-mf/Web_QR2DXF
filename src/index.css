@@ -58,26 +58,55 @@
   }
 
   .dark {
-    --background: 222 22% 9%;
-    --foreground: 210 20% 93%;
-    --card: 222 20% 13%;
-    --card-foreground: 210 20% 93%;
-    --border: 222 15% 22%;
-    --input: 222 15% 22%;
-    --ring: 213 90% 60%;
-    --primary: 213 90% 58%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222 15% 18%;
-    --secondary-foreground: 210 15% 75%;
-    --muted: 222 15% 18%;
-    --muted-foreground: 220 10% 58%;
-    --accent: 213 55% 20%;
-    --accent-foreground: 213 80% 78%;
-    --destructive: 0 68% 52%;
+    /* ── a-ef raw design tokens (dark) ──────────────────── */
+    --paper:          #12141C;
+    --paper-2:        #181C26;
+    --surface:        #1C202A;
+    --surface-2:      #222738;
+    --ink:            #E4E8F0;
+    --ink-2:          #A0A8B8;
+    --ink-3:          #898E9D;
+    --ink-4:          #525A6A;
+    --line:           #2D3343;
+    --line-2:         #343C50;
+    --line-strong:    #3E4860;
+    --signal:         #18C882;
+    --signal-ink:     #18C882;
+    --signal-bright:  #1AE090;
+    --signal-wash:    #0A2218;
+    --signal-line:    #0F3525;
+    --danger:         #E0605A;
+    --danger-wash:    #271212;
+    --danger-line:    #3D1C1A;
+    --warn:           #D49A20;
+    --warn-wash:      #261C08;
+    --warn-line:      #3A2810;
+    --info:           #4A8AEA;
+    --info-wash:      #0E1828;
+    --info-line:      #182440;
+    --focus-ring:     0 0 0 3px rgba(24, 200, 130, 0.28);
+
+    /* ── Tailwind CSS variable mappings (HSL) ───────────── */
+    --background:             222 22% 9%;
+    --foreground:             210 20% 93%;
+    --card:                   222 20% 13%;
+    --card-foreground:        210 20% 93%;
+    --border:                 222 15% 22%;
+    --input:                  222 15% 22%;
+    --ring:                   159 70% 48%;
+    --primary:                159 70% 44%;
+    --primary-foreground:     0 0% 100%;
+    --secondary:              222 15% 18%;
+    --secondary-foreground:   210 15% 75%;
+    --muted:                  222 15% 18%;
+    --muted-foreground:       220 10% 58%;
+    --accent:                 159 40% 16%;
+    --accent-foreground:      159 60% 72%;
+    --destructive:            3 62% 56%;
     --destructive-foreground: 0 0% 100%;
-    --success: 142 60% 50%;
-    --success-bg: 142 30% 12%;
-    --success-border: 142 35% 22%;
+    --success:                142 60% 50%;
+    --success-bg:             142 30% 12%;
+    --success-border:         142 35% 22%;
   }
 }
 

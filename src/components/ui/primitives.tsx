@@ -25,7 +25,7 @@ export const Input = React.forwardRef<
   <input
     type={type}
     className={cn(
-      "flex h-9 w-full rounded-md border border-[var(--line-2)] bg-[var(--surface)] px-3 py-[9px] text-sm text-[var(--ink)] shadow-none transition-[border-color,box-shadow] duration-[170ms] placeholder:text-[var(--ink-3)] focus-visible:outline-none focus-visible:border-[var(--signal)] focus-visible:[box-shadow:var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-[.42]",
+      "flex h-9 w-full rounded-md border border-[var(--line-2)] bg-[var(--surface)] px-3 py-[9px] text-sm text-[var(--ink)] shadow-none transition-[border-color,box-shadow] duration-[170ms] placeholder:text-[var(--ink-3)] focus-visible:outline-none focus-visible:border-[var(--signal)] focus-visible:[box-shadow:var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     ref={ref}
@@ -41,7 +41,7 @@ export const Textarea = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <textarea
     className={cn(
-      "flex min-h-[80px] w-full rounded-md border border-[var(--line-2)] bg-[var(--surface)] px-3 py-[9px] text-sm text-[var(--ink)] shadow-none transition-[border-color,box-shadow] duration-[170ms] placeholder:text-[var(--ink-3)] focus-visible:outline-none focus-visible:border-[var(--signal)] focus-visible:[box-shadow:var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-[.42] resize-none",
+      "flex min-h-[80px] w-full rounded-md border border-[var(--line-2)] bg-[var(--surface)] px-3 py-[9px] text-sm text-[var(--ink)] shadow-none transition-[border-color,box-shadow] duration-[170ms] placeholder:text-[var(--ink-3)] focus-visible:outline-none focus-visible:border-[var(--signal)] focus-visible:[box-shadow:var(--focus-ring)] disabled:cursor-not-allowed disabled:opacity-50 resize-none",
       className
     )}
     ref={ref}
