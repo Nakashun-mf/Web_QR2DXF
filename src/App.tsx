@@ -175,10 +175,15 @@ export default function App() {
       {showHelp && (
         <div className="border-b bg-accent/40">
           <div className="max-w-5xl mx-auto px-4 py-4">
-            <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-              <HelpCircle className="w-4 h-4 text-primary" />
-              使い方
-            </h2>
+            <div className="flex items-start justify-between mb-3 gap-4">
+              <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-primary" />
+                使い方
+              </h2>
+              <span className="text-xs text-muted-foreground shrink-0">
+                刻印機での利用を想定して作成されています
+              </span>
+            </div>
             <ol className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-muted-foreground">
               {[
                 { step: "1", title: "テキストを入力", body: "QRコードに埋め込む文字列・URL・品番などを入力します。最大500文字対応。" },
